@@ -16,7 +16,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/cmpe282Demo123/rest/project")
+@RequestMapping("/cmpe282kanghuawu368/rest/project")
 public class ProjectController {
 
     private static final Logger logger = LoggerFactory.getLogger(ProjectController.class);
@@ -29,12 +29,15 @@ public class ProjectController {
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public ResponseEntity<List<Project>> getAll() {
-        if (projectRepository.count() == 0) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(projectRepository.findAll(), HttpStatus.OK);
+        logger.info("GET all projects");
+        List<Project> projects = projectRepository.findAll();
+        if (projects.size() == 0) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(projects, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/", method = RequestMethod.POST)
     public ResponseEntity<Project> post(@RequestBody Project project, HttpServletRequest request) throws URISyntaxException {
+        logger.info("POST request body: " + project);
         if (projectRepository.findById(project.getId()) != null)
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         projectRepository.save(project);
@@ -45,13 +48,16 @@ public class ProjectController {
 
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<Project> get(@PathVariable(value = "id")  int id) {
-        if (projectRepository.findById(id) == null)
+        logger.info("GET id: " + id);
+        Project project = projectRepository.findById(id);
+        if (project == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(projectRepository.findById(id), HttpStatus.OK);
+        return new ResponseEntity<>(project, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<Project> put(@PathVariable(value = "id")  int id, @RequestBody Project request) {
+        logger.info("PUT id: " + id + " request body: " + request);
         Project project = projectRepository.findById(id);
         if (project == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -64,10 +70,12 @@ public class ProjectController {
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Project> delete(@PathVariable(value = "id")  int id) {
-        if (projectRepository.findById(id) == null)
+    public ResponseEntity<Void> delete(@PathVariable(value = "id")  int id) {
+        logger.info("DELETE id: " + id);
+        Project project = projectRepository.findById(id);
+        if (project == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        projectRepository.deleteById(id);
+        projectRepository.delete(project);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
