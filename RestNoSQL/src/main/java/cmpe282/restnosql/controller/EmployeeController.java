@@ -44,7 +44,7 @@ public class EmployeeController {
         employeeRepository.save(employee);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setLocation(new URI(request.getRequestURL().append(employee.getId()).toString()));
-        return new ResponseEntity<>(responseHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(responseHeaders, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
