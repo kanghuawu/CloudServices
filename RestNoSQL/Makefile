@@ -4,6 +4,10 @@ build:
 docker-mongo:
 	docker run --name dbkanghuawu368 -d mongo
 
+docker-mongo-clean:
+	docker stop dbkanghuawu368
+	docker rm dbkanghuawu368
+
 docker-build:
 	docker build -t app .
 	docker images
