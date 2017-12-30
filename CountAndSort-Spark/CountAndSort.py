@@ -1,5 +1,4 @@
 import os, shutil, argparse
-from operator import add
 from pyspark import SparkContext
 
 parser = argparse.ArgumentParser(description='Count URL and Sort by occurrence', prog='CountAndSort.py')
@@ -10,6 +9,7 @@ args = parser.parse_args()
 
 
 def run_spark(sc, input, output):
+    from operator import add
     lines = sc.textFile(input)
     counts = lines.map(lambda x: x.split(' ')[6]) \
         .map(lambda x: (x, 1)) \
@@ -23,6 +23,8 @@ def run_spark(sc, input, output):
     # for (word, count) in output:
     #     print("%s: %i" % (word, count))
 
+input = 'hdfs:/user/cloudera/countandsort/input'
+output = 'hdfs:/user/cloudera/countandsort-spark/output'
 
 if __name__ == "__main__":
     if args.debug and os.path.exists(args.output):

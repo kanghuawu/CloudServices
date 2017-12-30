@@ -13,14 +13,13 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import java.io.File;
 import java.io.IOException;
 
-public class CountAndSort {
+public class KangHuaWu368 {
     public static class CountMapper extends Mapper<Object, Text, Text, LongWritable> {
         private final static LongWritable one = new LongWritable(1);
         @Override
         public void map(Object key, Text value, Context context
         ) throws IOException, InterruptedException {
-            String req = value.toString();
-            String url = req.substring(req.indexOf("\""), req.lastIndexOf("\"")).split(" ")[1];
+            String url = value.toString().split(" ")[6];
             context.write(new Text(url), one);
         }
     }
@@ -43,7 +42,7 @@ public class CountAndSort {
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             String[] strArr = value.toString().split("\t");
             String url = strArr[0];
-            String num = String.format("%030d", Long.parseLong(strArr[1]));
+            String num = String.format("%06d", Long.parseLong(strArr[1]));
             context.write(new Text(num + "\t"+ url), new LongWritable());
         }
     }
@@ -70,7 +69,7 @@ public class CountAndSort {
         }
         Configuration conf = new Configuration();
         Job count = Job.getInstance(conf, "count");
-        count.setJarByClass(CountAndSort.class);
+        count.setJarByClass(KangHuaWu368.class);
         count.setMapperClass(CountMapper.class);
         count.setCombinerClass(IntSumReducer.class);
         count.setReducerClass(IntSumReducer.class);
@@ -86,7 +85,7 @@ public class CountAndSort {
             System.out.println("Output folder deleted!");
         }
         Job sort = Job.getInstance(conf, "sort");
-        sort.setJarByClass(CountAndSort.class);
+        sort.setJarByClass(KangHuaWu368.class);
         sort.setMapperClass(SortMapper.class);
         sort.setReducerClass(DummyReducer.class);
         sort.setOutputKeyClass(Text.class);
